@@ -1,28 +1,16 @@
-import { TextStyle, StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-export interface TabConfigsType {
-  labelStyle: TextStyle;
-  icon: {
-    component:
-      | ((props: {
-          color: Animated.Node<string | number>;
-          size: number;
-        }) => React.ReactNode)
-      | React.ReactNode;
-    activeColor: string;
-    inactiveColor: string;
-  };
-  background: {
-    activeColor: string;
-    inactiveColor: string;
-  };
+export type TabsConfigsType<
+  T = { [key: string]: TabConfigsType },
+  K extends keyof T = keyof T
+> = {
+  [key in K]: TabConfigsType
 }
-
-export interface TabsConfigsType {
-  [key: string]: TabConfigsType;
+export interface TabsConfig<T> {
+  [key: string]: T;
 }
-
+  
 export interface TabBarAnimationConfigurableProps {
   /**
    * Animation duration.
@@ -64,12 +52,12 @@ export interface TabBarItemConfigurableProps {
   isRTL?: boolean;
 }
 
-interface TabRoute extends TabConfigsType {
+export interface TabRoute {
   title: string;
   key: string;
 }
 
-export interface TabBarViewProps
+export interface TabBarViewProps<T>
   extends TabBarAnimationConfigurableProps,
     TabBarItemConfigurableProps {
   /**
@@ -79,7 +67,7 @@ export interface TabBarViewProps
   /**
    * Mapped routes with tab configs to be presented.
    */
-  routes: TabRoute[];
+  routes: Array<TabRoute & T>;
   /**
    * Root container style.
    */
@@ -88,8 +76,7 @@ export interface TabBarViewProps
 
 export interface TabBarItemProps
   extends Required<TabBarAnimationConfigurableProps>,
-    Required<TabBarItemConfigurableProps>,
-    TabConfigsType {
+    Required<TabBarItemConfigurableProps> {
   /**
    * Selected animated index.
    */
